@@ -39,7 +39,20 @@ function setup() {
 }
 
 function draw() {
-  flame.show();
-  flame.loop();
-  // flame.playOnce();
+// Trigger if either the mouse or spacebar is pressed
+  if (mouseIsPressed || keyIsPressed && keyCode === 32) {
+    
+    // temporary
+    flame.show();
+    flame.loop();
+    // TODO
+    // Play 'in' sprite
+    // Handoff to 'middle' sprite
+  } else {
+    // Temporary
+    background(255);
+    // TODO
+    // Play 'out' sprite
+  }
+
 }
