@@ -11,6 +11,7 @@ class Sprite {
     this.indexMiddle = 0;
     this.indexOut = 0;
     this.index = 0;
+    this.showEnterStage = true;
     this.showHoldScene = false;
     this.showExitScene = false;
     this.enterPlayProgress = 0;
@@ -24,6 +25,7 @@ class Sprite {
   // }
 
   enterStage() {
+    if (this.showEnterStage) {
     // Rewind the exit animation from last time
     this.enterPlayProgress = 0;
     // Disable the hold stage for showing, for now
@@ -33,27 +35,39 @@ class Sprite {
     // Create the image
     image(this.animationIn[indexInFloored], this.x, this.y, this.width, this.width);
 
+    // Enable the exit for showing
+    // TODO: Make this enter scene finish before triggering
+    this.showExitScene = true;
+
     // Check each draw() for if this has finished all frames
     if (indexInFloored < this.animationIn.length - 1 && this.enterPlayProgress !== 1) {
       // If not finished, progress another frame
       this.indexIn += this.speed;
     } else {
+      // console.log("Finished!")
       // If finished
+      // Finish the exit animation
       this.enterPlayProgress = 1;
+      // console.log ("finished")
+      // this.enterPlayProgress = 1;
+      // Don't let this function continue again
+      this.showEnterStage = false;
       // // Rewind the index for next time
       this.indexIn = 0;
       // Enable the hold stage for showing
-      console.log("Playing the hold music...")
       this.showHoldScene = true;
-      // this.holdStage();
+      
+      // return this.showHoldScene;
+      // this.holdStage()
     }
+  }
   }
 
   holdStage() {
     if (this.showHoldScene) {
       let indexMiddleFloored = floor(this.indexMiddle) % this.animationMiddle.length;
-      console.log(indexMiddleFloored);
-      image(this.animationMiddle[indexMiddleFloored], 100, 100, this.width, this.width);
+      // console.log(indexMiddleFloored);
+      image(this.animationMiddle[indexMiddleFloored], this.x, this.y, this.width, this.width);
       this.indexMiddle += this.speed;
 
 
@@ -76,7 +90,7 @@ class Sprite {
       // Set the animation index
       let indexOutFloored = floor(this.indexOut) % this.animationOut.length;
       // Create the image
-      image(this.animationOut[indexOutFloored], 200, 200, this.width, this.width);
+      image(this.animationOut[indexOutFloored], this.x, this.y, this.width, this.width);
 
       // Check each draw() for if this has finished all frames
       if (indexOutFloored < this.animationOut.length - 1 && this.exitPlayProgress !== 1) {
@@ -91,6 +105,8 @@ class Sprite {
         // Rewind the index for next time
         this.indexOut = 0;
         background(255);
+        // Allow the enter stage to appear
+        this.showEnterStage = true
       }
     }
 

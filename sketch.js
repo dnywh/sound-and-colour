@@ -38,23 +38,30 @@ function setup() {
     let img = spritesheetOut.get(0, i * spritesheetOut.width, spritesheetOut.width, spritesheetOut.width);
     animationOut.push(img);
   }
-  ball = new Sprite(animationIn, animationMiddle, animationOut, 0, 0, 100, 0.15);
+  ball = new Sprite(animationIn, animationMiddle, animationOut, 0, 0, 300, 0.1);
 
 }
 
 function draw() {
-  
   // Trigger if either the mouse or spacebar is pressed
   if (mouseIsPressed || keyIsDown(32)) {
     ball.enterStage();
+    playState = "running";
     ball.holdStage();
-    playState = "running"
+    // console.log("ready to show hold scene:", ball.showHoldScene)
+    // if (ball.showHoldScene) {
+    //   // console.log("ready")
+    //   ball.holdStage();
+    //   playState = "running"
+    // }
+
+    // ball.holdStage();
     // TODO
     // Play 'in' sprite
     // Handoff to 'middle' sprite
   } else {
-    // Temporary
     if (playState === "running") {
+      console.log("prepare to exit")
       ball.exitStage();
     }
     // TODO
