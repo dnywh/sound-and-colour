@@ -1,18 +1,17 @@
-// Forked from:
-// https://editor.p5js.org/codingtrain/sketches/vhnFx1mml
-// No longer relies on JSON file
-
 let spritesheet;
-let spritedata;
 
-let playMode = true;
-
-let animation = [];
+let animationIn = [];
+let animationMiddle = [];
+let animationOut = [];
 // let drawings = [];
+
+let playState = "off"
 
 function preload() {
   // spritesheet = loadImage('img/spritesheet-palindrome-300.jpg');
-  spritesheet = loadImage('img/spritesheet-middle.jpg');
+  spritesheetIn = loadImage('img/spritesheet-in.jpg');
+  spritesheetMiddle = loadImage('img/spritesheet-middle.jpg');
+  spritesheetOut = loadImage('img/spritesheet-out.jpg');
 }
 
 
@@ -23,36 +22,42 @@ function setup() {
   // let frames = spritedata.frames;
 
   //   Automatically count the number of frames by dividing the height by width (assuming frames are square)
-  let amountOfFrames = spritesheet.height / spritesheet.width;
+  let frameCountIn = spritesheetIn.height / spritesheetIn.width;
+  let frameCountMiddle = spritesheetMiddle.height / spritesheetMiddle.width;
+  let frameCountOut = spritesheetOut.height / spritesheetOut.width;
 
-  // for (let i = 0; i < frames.length; i++) {
-  for (let i = 0; i < amountOfFrames; i++) {
-    // let pos = frames[i].position;
-    // let img = spritesheet.get(pos.x, pos.y, pos.w, pos.h);
-    let img = spritesheet.get(0, i * spritesheet.width, spritesheet.width, spritesheet.width);
-    animation.push(img);
-
-
+  for (let i = 0; i < frameCountIn; i++) {
+    let img = spritesheetIn.get(0, i * spritesheetIn.width, spritesheetIn.width, spritesheetIn.width);
+    animationIn.push(img);
   }
-  flame = new Sprite(animation, 0, 0, 100, 0.15);
+  for (let i = 0; i < frameCountMiddle; i++) {
+    let img = spritesheetMiddle.get(0, i * spritesheetMiddle.width, spritesheetMiddle.width, spritesheetMiddle.width);
+    animationMiddle.push(img);
+  }
+  for (let i = 0; i < frameCountOut; i++) {
+    let img = spritesheetOut.get(0, i * spritesheetOut.width, spritesheetOut.width, spritesheetOut.width);
+    animationOut.push(img);
+  }
+  ball = new Sprite(animationIn, animationMiddle, animationOut, 0, 0, 100, 0.15);
 
 }
 
 function draw() {
-// Trigger if either the mouse or spacebar is pressed
-  if (mouseIsPressed || keyIsPressed && keyCode === 32) {
-    
-    // temporary
-    flame.show();
-    flame.loop();
+  
+  // Trigger if either the mouse or spacebar is pressed
+  if (mouseIsPressed || keyIsDown(32)) {
+    ball.enterStage();
+    ball.holdStage();
+    playState = "running"
     // TODO
     // Play 'in' sprite
     // Handoff to 'middle' sprite
   } else {
     // Temporary
-    background(255);
+    if (playState === "running") {
+      ball.exitStage();
+    }
     // TODO
     // Play 'out' sprite
   }
-
 }
