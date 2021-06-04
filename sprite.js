@@ -1,19 +1,24 @@
 // This class takes three animations and figures out the frames
 class Sprite {
-  constructor(spriteSheetIn, spriteSheetMiddle, spriteSheetOut, x, y, width, speed) {
+  constructor(spriteSheetArray, x, y, width, speed) {
+    // Break down the array again
+    this.spriteSheetIn = spriteSheetArray[0];
+    this.spriteSheetMiddle = spriteSheetArray[1];
+    this.spriteSheetOut = spriteSheetArray[2];
+
     //  Automatically count the number of frames by dividing the sprightsheet height by width
     // (assumes frames are square so the height of each square is the same as the entire width)
-    this.frameCountIn = spriteSheetIn.height / spriteSheetIn.width;
-    this.frameCountMiddle = spriteSheetMiddle.height / spriteSheetMiddle.width;
-    this.frameCountOut = spriteSheetOut.height / spriteSheetOut.width;
+    this.frameCountIn = this.spriteSheetIn.height / this.spriteSheetIn.width;
+    this.frameCountMiddle = this.spriteSheetMiddle.height / this.spriteSheetMiddle.width;
+    this.frameCountOut = this.spriteSheetOut.height / this.spriteSheetOut.width;
 
-
+    // Declare other useful variables
     this.x = x;
     this.y = y;
     this.width = width;
-    this.animationIn = [];
-    this.animationMiddle = [];
-    this.animationOut = [];
+    this.animationEnter = [];
+    this.animationHold = [];
+    this.animationExit = [];
     this.speed = speed;
     this.indexIn = 0;
     this.indexMiddle = 0;
@@ -25,48 +30,48 @@ class Sprite {
     this.enterPlayProgress = 0;
     this.exitPlayProgress = 0;
 
-    // Create img arrays for each of the three scenes
+    // Slice up the sprite sheets into arrays of single frames
+    // Do this for the enter, hold, and exit animations
     for (let i = 0; i < this.frameCountIn; i++) {
-      let img = spriteSheetIn.get(0, i * spriteSheetIn.width, spriteSheetIn.width, spriteSheetIn.width);
-      this.animationIn.push(img);
+      let img = this.spriteSheetIn.get(0, i * this.spriteSheetIn.width, this.spriteSheetIn.width, this.spriteSheetIn.width);
+      this.animationEnter.push(img);
     }
     for (let i = 0; i < this.frameCountMiddle; i++) {
-      let img = spriteSheetMiddle.get(0, i * spriteSheetMiddle.width, spriteSheetMiddle.width, spriteSheetMiddle.width);
-      this.animationMiddle.push(img);
+      let img = this.spriteSheetMiddle.get(0, i * this.spriteSheetMiddle.width, this.spriteSheetMiddle.width, this.spriteSheetMiddle.width);
+      this.animationHold.push(img);
     }
     for (let i = 0; i < this.frameCountOut; i++) {
-      let img = spriteSheetOut.get(0, i * spriteSheetOut.width, spriteSheetOut.width, spriteSheetOut.width);
-      this.animationOut.push(img);
+      let img = this.spriteSheetOut.get(0, i * this.spriteSheetOut.width, this.spriteSheetOut.width, this.spriteSheetOut.width);
+      this.animationExit.push(img);
     }
   }
 
-  // In
-  enterStage() {
+  // Enter the stage
+  stageEnter() {
     if (this.showEnterStage) {
       // Rewind the exit animation from last time
       this.enterPlayProgress = 0;
       // Disable the hold stage for showing, for now
       this.showHoldScene = false;
       // Set the animation index
-      let indexInFloored = floor(this.indexIn) % this.animationIn.length;
+      let indexInFloored = floor(this.indexIn) % this.animationEnter.length;
       // Create the image
-      image(this.animationIn[indexInFloored], this.x, this.y, this.width, this.width);
+      image(this.animationEnter[indexInFloored], this.x, this.y, this.width, this.width);
 
       // Enable the exit for showing
       // TODO: Make this enter scene completely play out before triggering exit
       this.showExitScene = true;
 
       // Check each draw() for if this has finished all frames
-      if (indexInFloored < this.animationIn.length - 1 && this.enterPlayProgress !== 1) {
+      if (indexInFloored < this.animationEnter.length - 1 && this.enterPlayProgress !== 1) {
         // If not finished, progress another frame
         this.indexIn += this.speed;
       } else {
-        // console.log("Finished!")
+
         // If finished
         // Finish the exit animation
         this.enterPlayProgress = 1;
-        // console.log ("finished")
-        // this.enterPlayProgress = 1;
+
         // Don't let this function continue again
         this.showEnterStage = false;
         // // Rewind the index for next time
@@ -74,45 +79,36 @@ class Sprite {
         // Enable the hold stage for showing
         this.showHoldScene = true;
 
-        // return this.showHoldScene;
-        // this.holdStage()
       }
     }
   }
 
-  // Middle
-  holdStage() {
+  // Hold the stage
+  stageHold() {
     if (this.showHoldScene) {
-      let indexMiddleFloored = floor(this.indexMiddle) % this.animationMiddle.length;
+      let indexMiddleFloored = floor(this.indexMiddle) % this.animationHold.length;
       // console.log(indexMiddleFloored);
-      image(this.animationMiddle[indexMiddleFloored], this.x, this.y, this.width, this.width);
+      image(this.animationHold[indexMiddleFloored], this.x, this.y, this.width, this.width);
       this.indexMiddle += this.speed;
 
 
       // Enable the exit for showing
       this.showExitScene = true;
     }
-
-    //     Move from left to right
-    //     this.x += this.speed * 15;
-
-    //     if (this.x > width) {
-    //       this.x = -this.w;
-    //     }
   }
 
-  // Out
-  exitStage() {
+  // Exit the stage
+  stageExit() {
     if (this.showExitScene) {
       // Rewind the exit animation from last time
       this.exitPlayProgress = 0;
       // Set the animation index
-      let indexOutFloored = floor(this.indexOut) % this.animationOut.length;
+      let indexOutFloored = floor(this.indexOut) % this.animationExit.length;
       // Create the image
-      image(this.animationOut[indexOutFloored], this.x, this.y, this.width, this.width);
+      image(this.animationExit[indexOutFloored], this.x, this.y, this.width, this.width);
 
       // Check each draw() for if this has finished all frames
-      if (indexOutFloored < this.animationOut.length - 1 && this.exitPlayProgress !== 1) {
+      if (indexOutFloored < this.animationExit.length - 1 && this.exitPlayProgress !== 1) {
         // If not, progress another frame
         this.indexOut += this.speed;
       } else {
