@@ -1,3 +1,4 @@
+// This class takes three animations and figures out the frames
 class Sprite {
   constructor(animationIn, animationMiddle, animationOut, x, y, width, speed) {
     this.x = x;
@@ -18,12 +19,7 @@ class Sprite {
     this.exitPlayProgress = 0;
   }
 
-
-  // show() {
-  //   let index = floor(this.index) % this.lengthMiddle;
-  //   image(this.animationMiddle[index], this.x, this.y, this.width, this.width);
-  // }
-
+  // In
   enterStage() {
     if (this.showEnterStage) {
     // Rewind the exit animation from last time
@@ -36,7 +32,7 @@ class Sprite {
     image(this.animationIn[indexInFloored], this.x, this.y, this.width, this.width);
 
     // Enable the exit for showing
-    // TODO: Make this enter scene finish before triggering
+    // TODO: Make this enter scene completely play out before triggering exit
     this.showExitScene = true;
 
     // Check each draw() for if this has finished all frames
@@ -63,6 +59,7 @@ class Sprite {
   }
   }
 
+  // Middle
   holdStage() {
     if (this.showHoldScene) {
       let indexMiddleFloored = floor(this.indexMiddle) % this.animationMiddle.length;
@@ -83,6 +80,7 @@ class Sprite {
     //     }
   }
 
+  // Out
   exitStage() {
     if (this.showExitScene) {
       // Rewind the exit animation from last time
